@@ -1,26 +1,28 @@
 #!/bin/sh
 
-# Create a .ps of the gschem .sch files in the repository
+# Create a .png of the gschem .sch files in the repository
 sch_files=`git diff-index --cached --name-only HEAD | egrep -i "*.sch$"`
 for file in $sch_files
 do
-  ps_file=`echo "$file" | sed "s/\.sch/.ps/"`
-  ps_file_base=`basename "$ps_file"`
-  echo "Creating $ps_file from $file"
-  print_script=""
-  print_script0="~/.git_hooks/resources/print.scm"
-  print_script1="git_hooks/resources/print.scm"
-  if [ -f "$print_script0" ]
-    print_script="$print_script0"
-  elif [ -f "$print_script1" ]
-    print_script="$print_script1"
+  image_file=`echo "$file" | sed "s/\.sch/.png/"`
+  image_file_base=`basename "$image_file"`
+  echo "Creating $image_file from $file"
+  image_script_base="image.scm"
+  image_script=""
+  image_script0="~/.git_hooks/resources/$image_script_base"
+  image_script1="git_hooks/resources/$image_script_base"
+  # TODO: check the default install of gschem (/usr/share/gEDA/scheme/image.scm in Arch Linux)
+  if [ -f "$image_script0" ]
+    image_script="$image_script0"
+  elif [ -f "$image_script1" ]
+    image_script="$image_script1"
   else
-    echo "Error: could not find 'print.scm' for gschem .ps generation"
+    echo "Error: could not find '$image_script_base' for gschem image generation"
     exit 1
   fi
 
-  gschem -p -o "$ps_file_base" -s "$print_script" "$file"
+  gschem -p -o "$image_file_base" -s "$image_script" "$file"
 
-  echo "Adding .ps files to staging area"
-  git add $ps_file
+  echo "Adding image files to staging area"
+  git add $image_file
 done
