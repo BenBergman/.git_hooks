@@ -7,7 +7,19 @@ do
   ps_file=`echo "$file" | sed "s/\.sch/.ps/"`
   ps_file_base=`basename "$ps_file"`
   echo "Creating $ps_file from $file"
-  gschem -p -o "$ps_file_base" -s ~/bin/print.scm "$file"
+  print_script=""
+  print_script0="~/.git_hooks/resources/print.scm"
+  print_script1="git_hooks/resources/print.scm"
+  if [ -f "$print_script0" ]
+    print_script="$print_script0"
+  elif [ -f "$print_script1" ]
+    print_script="$print_script1"
+  else
+    echo "Error: could not find 'print.scm' for gschem .ps generation"
+    exit 1
+  fi
+
+  gschem -p -o "$ps_file_base" -s "$print_script" "$file"
 
   echo "Adding .ps files to staging area"
   git add $ps_file
