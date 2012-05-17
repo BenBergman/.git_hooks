@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Create a .ps of the gschem .sch files in the repository
+sch_files=`git diff-index --cached --name-only HEAD | egrep -i "*.sch$"`
+for file in $sch_files
+do
+  ps_file=`echo "$file" | sed "s/\.sch/.ps/"`
+  ps_file_base=`basename "$ps_file"`
+  echo "Creating $ps_file from $file"
+  gschem -p -o "$ps_file_base" -s ~/bin/print.scm "$file"
+
+  echo "Adding .ps files to staging area"
+  git add $ps_file
+done
