@@ -23,8 +23,8 @@ function run_test
 
 case "${1}" in
     --about )
-        echo -n "Include .png versions of all changed schematics in commits using gschem which is: "
-        which gschem > /dev/null
+        echo -n "Include .png versions of all changed PCB layouts in commits using pcb which is: "
+        which pcb > /dev/null
         if [ ! $? -eq 0 ] ; then
             echo "not installed"
         else
